@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GroupAdmin implements Sender{
-    private List<ConcreteMember> members;
+    private List<ConcreteMember> members; // not sure if needed
     UndoableStringBuilder usb;
     public GroupAdmin(){
         members = new ArrayList<>();
@@ -14,14 +14,18 @@ public class GroupAdmin implements Sender{
     @Override
     public void register(Member obj) {
         if(obj instanceof ConcreteMember){
-            members.add((ConcreteMember) obj);
+            ConcreteMember CMember = (ConcreteMember)obj;
+            members.add(CMember);
+           CMember.update(usb);
     }
     }
 
     @Override
     public void unregister(Member obj) {
         if(obj instanceof ConcreteMember) {
-            members.remove((ConcreteMember) obj);
+            ConcreteMember CMember = (ConcreteMember)obj;
+            members.remove(CMember);
+            CMember.update(null);
         }
     }
 
