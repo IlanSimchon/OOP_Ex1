@@ -42,7 +42,7 @@
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-<dependencies>
+<dependencie>
     <dependency>
         <groupId>org.openjdk.jol</groupId>
         <artifactId>jol-core</artifactId>
@@ -53,6 +53,6 @@
         <artifactId>junit-jupiter-api</artifactId>
         <version>5.9.0</version>
     </dependency>
-</dependencies>
+</dependencie>
 
 </project>
