@@ -64,9 +64,7 @@ public class GroupAdmin implements Sender{
         return members.size();
     }
     public String getString(){
-        if(usb == null){
-            return null;
-        }
         return usb.toString();
     }
 }
+
