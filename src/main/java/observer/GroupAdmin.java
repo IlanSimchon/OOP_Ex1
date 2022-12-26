@@ -5,47 +5,68 @@ import java.util.List;
 
 public class GroupAdmin implements Sender{
     private List<ConcreteMember> members; // not sure if needed
-    UndoableStringBuilder usb;
+    private UndoableStringBuilder usb;
     public GroupAdmin(){
         members = new ArrayList<>();
         usb = new UndoableStringBuilder();
     }
 
     @Override
-    public void register(Member obj) {
+    public void register(Member obj) throws UnsupportedOperationException{
         if(obj instanceof ConcreteMember){
             ConcreteMember CMember = (ConcreteMember)obj;
+            CMember.registration(true , usb);
             members.add(CMember);
-           CMember.update(usb);
-    }
+        }
     }
 
     @Override
     public void unregister(Member obj) {
         if(obj instanceof ConcreteMember) {
             ConcreteMember CMember = (ConcreteMember)obj;
-            members.remove(CMember);
-            CMember.update(null);
+            if(members.contains(CMember)) {
+                members.remove(CMember);
+                CMember.registration(false, usb);
+            }
         }
     }
 
     @Override
     public void insert(int offset, String obj) {
         usb.insert(offset,obj);
+        updateAll();
     }
 
     @Override
     public void append(String obj) {
-    usb.append(obj);
+        usb.append(obj);
+        updateAll();
     }
 
     @Override
     public void delete(int start, int end) {
-    usb.delete(start,end);
+        usb.delete(start,end);
+        updateAll();
     }
 
     @Override
     public void undo() {
-    usb.undo();
+        usb.undo();
+        updateAll();
+    }
+
+    private void updateAll(){
+        for (Member member: members) {
+            member.update(usb);
+        }
+    }
+    public int getNumOfMembers(){
+        return members.size();
+    }
+    public String getString(){
+        if(usb == null){
+            return null;
+        }
+        return usb.toString();
     }
 }
