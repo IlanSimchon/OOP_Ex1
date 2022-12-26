@@ -34,25 +34,25 @@
             <version>20.1.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>org.openjdk.jol</groupId>
+            <artifactId>jol-core</artifactId>
+            <version>0.16</version>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.9.0</version>
+        </dependency>
     </dependencies>
-
 
     <properties>
         <maven.compiler.source>19</maven.compiler.source>
         <maven.compiler.target>19</maven.compiler.target>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
-<dependencie>
-    <dependency>
-        <groupId>org.openjdk.jol</groupId>
-        <artifactId>jol-core</artifactId>
-        <version>0.16</version>
-    </dependency>
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter-api</artifactId>
-        <version>5.9.0</version>
-    </dependency>
-</dependencie>
+
+
+
 
 </project>

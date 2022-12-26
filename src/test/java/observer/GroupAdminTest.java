@@ -69,25 +69,56 @@ class GroupAdminTest {
 
         GA1.unregister(null);
         assertEquals(1 , GA1.getNumOfMembers());
+
+        GA1.register(m2);
+        assertEquals(2 , GA1.getNumOfMembers());
     }
 
     @Test
     void insert() {
+        GA1.register(m1);
+        GA1.insert(0, "test ");
+        assertEquals("test akuna matata" , m1.getString());
     }
 
     @Test
     void append() {
+        GA1.register(m1);
+        GA1.append(" test");
+        assertEquals("akuna matata test" , m1.getString());
     }
 
     @Test
     void delete() {
+        GA1.register(m1);
+        GA1.delete(0 , 6);
+        assertEquals("matata" , m1.getString());
+
     }
 
     @Test
     void undo() {
+        GA1.register(m1);
+        GA1.append(" test");
+        GA1.undo();
+        assertEquals("akuna matata" , m1.getString());
+
     }
 
     @Test
     void updateAll() {
+        GA1.register(m1);
+        GA1.register(m2);
+        GA1.register(m3);
+        GA1.append(" test");
+        assertEquals("akuna matata test" , m1.getString());
+        assertEquals("akuna matata test" , m2.getString());
+        assertEquals("akuna matata test" , m3.getString());
+
+        GA1.unregister(m3);
+        GA1.insert(0 , "test ");
+        assertEquals("test akuna matata test" , m1.getString());
+        assertEquals("test akuna matata test" , m2.getString());
+        assertEquals(null , m3.getString());
     }
 }
