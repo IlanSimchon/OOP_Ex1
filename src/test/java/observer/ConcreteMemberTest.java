@@ -30,4 +30,29 @@ class ConcreteMemberTest {
         assertEquals(m2.getString() , m3.getString());
         assertEquals(1 , m3.getNumberOfChanges());
     }
+    @Test
+    void getNumOfChanges(){
+        ConcreteMember m1 = new ConcreteMember("Timon");
+        assertEquals(0, m1.getNumberOfChanges());
+        GA1.register(m1);
+        assertEquals(0, m1.getNumberOfChanges());
+        GA1.append("hey");
+        assertEquals(1, m1.getNumberOfChanges());
+        GA1.append(" bye");
+        assertEquals(2,m1.getNumberOfChanges());
+    }
+    @Test
+    void getName(){
+        ConcreteMember m2 =  new ConcreteMember("Pumba");
+        assertEquals("Pumba" , m2.getName());
+
+    }
+    @Test
+    void EmptyConstractotor(){
+        ConcreteMember cm = new ConcreteMember();
+        assertEquals(cm.getString() , null);
+        assertEquals(cm.getNumberOfChanges() , 0);
+        assertEquals(cm.getName(), "Plony");
+
+    }
 }
