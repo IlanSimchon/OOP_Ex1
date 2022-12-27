@@ -1,10 +1,11 @@
 package observer;
 
 import java.util.ArrayList;
+import java.util.InputMismatchException;
 import java.util.List;
 
 public class GroupAdmin implements Sender{
-    private List<ConcreteMember> members; // not sure if needed
+    private List<ConcreteMember> members;
     private UndoableStringBuilder usb;
     public GroupAdmin(){
         members = new ArrayList<>();
@@ -12,12 +13,25 @@ public class GroupAdmin implements Sender{
     }
 
     @Override
-    public void register(Member obj) throws UnsupportedOperationException{
-        if(obj instanceof ConcreteMember){
-            ConcreteMember CMember = (ConcreteMember)obj;
-            CMember.registration(true , usb);
-            members.add(CMember);
+    public void register(Member obj) throws UnsupportedOperationException {
+        if (obj instanceof ConcreteMember) {
+            ConcreteMember CMember = (ConcreteMember) obj;
+            if (!this.members.contains(CMember)) {
+                if (CMember.getIs_conected()) {
+                    throw new UnsupportedOperationException("you " +
+                            "need to unregister your GroupAdmin before new registration");
+                } else {
+                    members.add(CMember);
+                    CMember.setIs_conected(true);
+                    CMember.nullifyCount_update();
+                }
+            }
         }
+             else {
+                    throw new IllegalArgumentException("your input is null or other implementation of Member");
+                }
+
+
     }
 
     @Override
@@ -26,8 +40,14 @@ public class GroupAdmin implements Sender{
             ConcreteMember CMember = (ConcreteMember)obj;
             if(members.contains(CMember)) {
                 members.remove(CMember);
-                CMember.registration(false, usb);
+                CMember.setIs_conected(false);
             }
+            else {
+                throw new InputMismatchException("this GroupAdmin do not contain this ConcreteMember");
+            }
+        }
+        else {
+            throw new IllegalArgumentException("your input is null or other implementation of Member");
         }
     }
 
@@ -65,6 +85,14 @@ public class GroupAdmin implements Sender{
     }
     public String getString(){
         return usb.toString();
+    }
+
+    @Override
+    public String toString() {
+        return "GroupAdmin{" +
+                "members=" + members +
+                ", usb=" + usb +
+                '}';
     }
 }
 

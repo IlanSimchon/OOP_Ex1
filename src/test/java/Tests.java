@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.logging.Logger;
 import org.junit.platform.commons.logging.LoggerFactory;
 
+import java.util.InputMismatchException;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class Tests{
@@ -37,7 +39,7 @@ public class Tests{
 
     }
 
-    //********************************ConcreteMember Tests********************************
+    //********************************GroupAdmin Tests********************************
 
     GroupAdmin GA1 = new GroupAdmin();
     GroupAdmin GA2 = new GroupAdmin();
@@ -46,12 +48,18 @@ public class Tests{
     ConcreteMember m3 = new ConcreteMember("Simba");
 
     @Test
-    void register() {
+    void register(){
         GA1.register(m1);
         assertEquals(1, GA1.getNumOfMembers());
+        assertEquals(null , m1.getString());
+        GA1.append("try");
         assertEquals(GA1.getString(), m1.getString());
 
         GA1.register(m2);
+        GA1.register(m2);
+        assertEquals(2 , GA1.getNumOfMembers());
+
+        GA1.append(" test");
         assertEquals(m1.getString(), m2.getString());
 
         GA1.unregister(m1);
@@ -66,20 +74,23 @@ public class Tests{
     }
     @Test
     void NotConcreteMemberRegister(){
-        Member m = new Member() {
+        Member m = new Member(){
             @Override
             public void update(UndoableStringBuilder usb) {
                 System.out.println("i should not print this");
             }
         };
-        GA1.register(m);
-        assertEquals(0 , GA1.getNumOfMembers());
-    }
-    @Test
-    void nullRegister(){
-        GA1.register(null);
+        Exception exception_other = assertThrows(IllegalArgumentException.class, () -> GA1.register(m));
+        assertEquals( "your input is null or other implementation of Member",exception_other.getMessage());
         assertEquals(0 , GA1.getNumOfMembers());
 
+    }
+
+    @Test
+    void nullRegister(){
+        Exception exception_null = assertThrows(IllegalArgumentException.class, () -> GA1.register(null));
+        assertEquals( "your input is null or other implementation of Member",exception_null.getMessage());
+        assertEquals(0 , GA1.getNumOfMembers());
     }
 
     @Test
@@ -87,22 +98,40 @@ public class Tests{
         GA1.register(m1);
         GA1.register(m2);
         GA1.unregister(m1);
-        assertEquals(null , m1.getString());
         assertEquals(1 , GA1.getNumOfMembers());
 
-        GA1.unregister(m3);
-        assertEquals(null , m3.getString());
+
+        Exception exception = assertThrows(InputMismatchException.class, () ->  GA1.unregister(m3));
+        assertEquals( "this GroupAdmin do not contain this ConcreteMember",exception.getMessage());
+
         assertEquals(1 , GA1.getNumOfMembers());
         GA1.insert(0 , "test ");
         assertEquals("test " , m2.getString());
-        assertEquals(null , m3.getString());
-
     }
     @Test
-    void unregisterNull(){
+    void NotConcreteMemberUnregister(){
+        Member m = new Member(){
+            @Override
+            public void update(UndoableStringBuilder usb) {
+                System.out.println("i should not print this");
+            }
+        };
+        Exception exception_other = assertThrows(IllegalArgumentException.class, () -> GA1.unregister(m));
+        assertEquals( "your input is null or other implementation of Member",exception_other.getMessage());
+        assertEquals(0 , GA1.getNumOfMembers());
+
+    }
+
+    @Test
+    void UnregisterNull(){
+
         GA1.register(m1);
-        GA1.unregister(null);
+
+        Exception exception_null = assertThrows(IllegalArgumentException.class, () -> GA1.unregister(null));
+        assertEquals( "your input is null or other implementation of Member",exception_null.getMessage());
+
         assertEquals(1 , GA1.getNumOfMembers());
+
     }
 
     @Test
@@ -169,32 +198,32 @@ public class Tests{
 
         GA1.append("akuna matata");
         GA1.register(m1);
-        assertEquals(GA1.getString() , m1.getString());
+        assertEquals(null , m1.getString());
 
         GA1.append("it's");
-        assertEquals(1 , m1.getNumberOfChanges());
+        assertEquals(1 , m1.getCount_update());
 
         GA1.register(m2);
         GA1.undo();
         assertEquals(m2.getString() , m1.getString());
-        assertEquals(m1.getNumberOfChanges() -1 , m2.getNumberOfChanges());
+        assertEquals(m1.getCount_update() -1 , m2.getCount_update());
 
         GA1.register(m3);
         GA1.delete(3,5);
         assertEquals(GA1.getString() , m3.getString());
         assertEquals(m2.getString() , m3.getString());
-        assertEquals(1 , m3.getNumberOfChanges());
+        assertEquals(1 , m3.getCount_update());
     }
     @Test
-    void getNumOfChanges(){
+    void getCount_update(){
         ConcreteMember m1 = new ConcreteMember("Timon");
-        assertEquals(0, m1.getNumberOfChanges());
+        assertEquals(0 , m1.getCount_update());
         GA1.register(m1);
-        assertEquals(0, m1.getNumberOfChanges());
+        assertEquals(0, m1.getCount_update());
         GA1.append("hey");
-        assertEquals(1, m1.getNumberOfChanges());
+        assertEquals(1, m1.getCount_update());
         GA1.append(" bye");
-        assertEquals(2,m1.getNumberOfChanges());
+        assertEquals(2,m1.getCount_update());
     }
     @Test
     void getName(){
@@ -206,7 +235,7 @@ public class Tests{
     void EmptyConstructor(){
         ConcreteMember cm = new ConcreteMember();
         assertNull(cm.getString());
-        assertEquals(cm.getNumberOfChanges() , 0);
+        assertEquals(cm.getCount_update() , 0);
         assertEquals(cm.getName(), "Plony");
 
     }
