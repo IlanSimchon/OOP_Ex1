@@ -15,8 +15,6 @@ public class Tests{
     // stub method to check external dependencies compatibility
     @Test
     public void test(){
-        String s1 = "Alice";
-        String s2 = "Bob";
         GroupAdmin GAMemoryTests = new GroupAdmin();
         GAMemoryTests.register(new ConcreteMember("A"));
         GA1.append("hello world,");
@@ -28,15 +26,11 @@ public class Tests{
         GAMemoryTests.register(new ConcreteMember("F"));
         GAMemoryTests.register(new ConcreteMember("G"));
         logger.info(()->JvmUtilities.objectFootprint(GAMemoryTests));
+        GAMemoryTests.append("i just want to add text and check how it will effect the memory test =)");
         GAMemoryTests.append("i just want to add text and check i it will effect the memory test =)");
-
-        logger.info(()->JvmUtilities.objectTotalSize(GAMemoryTests));
-        logger.info(() -> JvmUtilities.objectTotalSize(GAMemoryTests));
-        GAMemoryTests.append("i just want to add text and check i it will effect the memory test =)");
-        logger.info(() -> JvmUtilities.objectTotalSize(GAMemoryTests));
+        logger.info(()->JvmUtilities.objectFootprint(GAMemoryTests));
 
         logger.info(() -> JvmUtilities.jvmInfo());
-
     }
 
     //********************************GroupAdmin Tests********************************
@@ -189,6 +183,16 @@ public class Tests{
         GA1.append("akuna matata");
         assertEquals("akuna matata",GA1.getString() );
     }
+    @Test
+    void GroupAdminToStringTest(){
+        GA1.append("abcd");
+        assertEquals("GroupAdmin{ members = [], usb = abcd }",
+                GA1.toString());
+        GA1.register(m1);
+        GA1.register(m2);
+        assertEquals("GroupAdmin{ members = [ConcreteMember{name='Timon', usb=null}, ConcreteMember{name='Pumba', usb=null}], usb = abcd }",
+                GA1.toString());
+    }
     //********************************ConcreteMember Tests********************************
     @Test
     void update() {
@@ -237,6 +241,21 @@ public class Tests{
         assertNull(cm.getString());
         assertEquals(cm.getCount_update() , 0);
         assertEquals(cm.getName(), "Plony");
+
+    }
+    @Test
+    void ConcreteMemberToStringTest(){
+        GA1.append("AAA");
+        GA1.register(m1);
+        assertEquals("ConcreteMember{name='Timon', usb=null}" , m1.toString());
+        GA1.append("ef");
+        assertEquals("ConcreteMember{name='Timon', usb=AAAef}" , m1.toString());
+    }
+    @Test
+    void getUsbTest() {
+        GA1.register(m1);
+        GA1.append("AAA");
+        assertEquals("AAA", m1.getUsb().toString());
 
     }
 
