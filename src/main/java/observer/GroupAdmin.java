@@ -90,9 +90,9 @@ public class GroupAdmin implements Sender{
     @Override
     public String toString() {
         return "GroupAdmin{" +
-                "members=" + members +
-                ", usb=" + usb +
-                '}';
+                " members = " + members.toString() +
+                ", usb = " + usb.toString() +
+                " }";
     }
 }
 
